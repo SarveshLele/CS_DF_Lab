@@ -1,0 +1,54 @@
+import os
+import re
+
+path="/home/spaghetti/.local/share/Trash/files"          
+infopath="/home/spaghetti/.local/share/Trash/info"
+dirlist=os.listdir(path)
+
+#list of file which present in file folder
+directory=[]
+popis=""
+for fname in dirlist:
+    directory.append(fname)
+    popis = popis + " " + fname
+print(popis)
+fname=input("\nEnter the file name which to you want to recover")
+a=open(infopath+"/"+fname+".trashinfo","r")
+print(a)
+
+#To open file which user have selected
+#To read the path which user have selected
+for line in a:
+      if "Path=" in line:
+        ab=re.findall(r'/.*',line)
+print(ab)
+
+#To remove the extra elements frm path
+destipath=str(ab)
+destipath= destipath.lstrip('[')
+destipath=destipath.rstrip(']')
+destipath=destipath[:-1]
+destipath=destipath[1:]
+print("destination path is"+ destipath)
+
+#To open the file from trash
+file1 = open(path+"/"+fname,"rb")
+print("file1")
+
+#To create the file in home folder
+file2 = open(destipath,"wb")
+print("file2")
+
+#write data into file which is stored at home folder
+file2.write(file1.read())
+file1.close()
+file2.close()
+print("File is recovered to desination path")
+
+#remove file from trash
+os.remove(path+"/"+fname)
+print("remove from"+path+":"+fname)
+	
+#remove file from trashinfo
+os.remove(infopath+"/"+fname+".trashinfo")
+print("remove from"+infopath+":"+fname)	
